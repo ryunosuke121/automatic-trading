@@ -4,8 +4,16 @@ WORKDIR /app
 
 RUN pip install --upgrade pip
 
-COPY requirements.txt requirements.txt
+COPY trading/requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
+
+COPY trading/ .
+
+COPY utils/ ./utils/
+
+COPY models/ ./models/
+
+COPY scalers/ ./scalers/
 
 CMD ["python", "main.py"]

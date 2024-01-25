@@ -1,10 +1,10 @@
 services:
   app:
     build: 
-        context: .
-        dockerfile: ./Dockerfile
+        context: ../
+        dockerfile: ./trading/Dockerfile
     container_name: automatic-trading-container
     env_file:
       - ./.env
-    volumes:
-      - ./:/app
+    tty: true
+    stdin_open: true

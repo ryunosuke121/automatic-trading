@@ -11,9 +11,14 @@ import threading
 def main():
     config = get_config()
     model = LoadModelService().load_model("./models/num_model.h5")
+    preprocessing_service = PreprocessingService(
+        window_size=config["window_size"], predict_min_after=config["predict_min_after"]
+    )
     q = RatePublisher(config=config).q
     
-    subscribe_thread = threading.Thread(target=subscribe, args=(q, PredictRateService(model).predict))
+    subscribe_thread = threading.Thread(
+        target=subscribe, args=(q, PredictRateService(model, preprocessing_service).predict)
+    )
     subscribe_thread.start()
 
 
