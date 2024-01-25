@@ -1,0 +1,10 @@
+services:
+  app:
+    build: 
+        context: .
+        dockerfile: ./Dockerfile
+    container_name: automatic-trading-container
+    env_file:
+      - ./.env
+    volumes:
+      - ./:/app

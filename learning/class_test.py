@@ -1,7 +1,7 @@
 from keras.models import load_model
 from keras.models import Sequential
 from learning.class_ml import PreprocessingService
-from plot import FXPlotService
+from utils.plot import FXPlotService
 
 
 class ModelTestService:
