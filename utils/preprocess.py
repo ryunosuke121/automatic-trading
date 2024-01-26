@@ -1,3 +1,4 @@
+from log_config import logger
 from numpy import ndarray
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
@@ -18,7 +19,7 @@ class PreprocessingService:
     
     def scale_process(self, data: ndarray) -> ndarray:
         scaled_data = self.MinMaxScale(data)
-        scaled_data = np.reshape(scaled_data, (scaled_data.shape[0], scaled_data.shape[1], 1))
+        scaled_data = np.reshape(scaled_data, (1, scaled_data.shape[0], scaled_data.shape[1]))
         return scaled_data
 
     # データをxとyに分割する(トレーニング用)
@@ -61,3 +62,11 @@ class PreprocessingService:
             else:
                 y.append([0, 1])
         return np.array(x), np.array(y)
+    
+    # パスからcsv形式のデータを読み込む
+    @staticmethod
+    def load_data(path: str) -> ndarray:
+        df = pd.read_csv(path)
+        data = df.filter(["close"])
+        data = data.values
+        return data

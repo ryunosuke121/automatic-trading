@@ -1,33 +1,39 @@
 from datetime import datetime
+from http.client import ImproperConnectionState
 import queue
 import time
 import pandas as pd
 import requests
-
+from log_config import logger
+import numpy as np
 class RatePublisher:
     def __init__(self, config):
         self.q = queue.Queue()
         self.get_kline_service = GetKlineService()
         self.config = config
-        self.run()
     
     def run(self):
+        logger.info("start rate publisher")
         while True:
             rate = self.get_rate()
+            logger.debug(rate)
             self.publish(rate)
-            time.sleep(60)
+            time.sleep(15)
 
     def publish(self, rate):
         self.q.put(rate)
     
-    def get_rate(self):
+    # shape(120, 1)
+    def get_rate(self) -> np.ndarray:
         current_date = datetime.now().strftime("%Y%m%d")
         rate_df = self.get_kline_service.get_1day_Kline(
             self.config["symbol"], "ASK", "1min", current_date
         )
         
-        return rate_df["close"].tail(self.config["window_size"])
-
+        ndarray_rate = np.array(rate_df["close"].iloc[-120:])
+        ndarray_rate = ndarray_rate.reshape(120,1)
+        
+        return ndarray_rate
 
 
 class GetKlineService:
